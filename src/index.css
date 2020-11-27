@@ -26,6 +26,14 @@
   background-color: darkgoldenrod;
 }
 
-.solved {
-  background-color: green;
+#solvedSpan {
+  color: green;
+  margin-top: 55px;
+  font-size: 35px;
+  margin-left: 35px;
+}
+
+.toggleHistoryButton {
+  margin-top:35px;
+  width: 75px;
 }

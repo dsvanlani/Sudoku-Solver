@@ -7,8 +7,8 @@ import checkIDs from '../checkIDs'
 class Board extends React.Component {
     constructor() {
         super()
-        const initTiles = dummyBoard.map(k => {
-            return {
+        const initTiles = dummyBoard.map(k => {  // creates an array of objects of length 81
+            return {                             // to represent the tiles on the board
                 value: k,
                 isInitial: !!k 
             }
@@ -17,6 +17,8 @@ class Board extends React.Component {
             tiles: initTiles,
             selectedTile: null,
             isSolved: false,
+            step: 0,
+            history: [initTiles]
         }
     }
 
@@ -25,26 +27,29 @@ class Board extends React.Component {
         const selectedTile = id
         this.setState({
             ...this.state,
-            selectedTile: selectedTile
+            selectedTile: selectedTile,
         })
     }
 
     handleKeyDown(event) {
         const numbers = ['1','2','3','4','5','6','7','8','9']
         if (this.state.tiles[this.state.selectedTile] && !this.state.tiles[this.state.selectedTile].isInitial ) {
-            if (numbers.includes(event.key)) {
-                const targetTile = this.state.selectedTile
-                let updatedTiles = [...this.state.tiles]
-                updatedTiles[targetTile] = {
+            if (numbers.includes(event.key)) {  // if the key down was a number
+                const targetTile = this.state.selectedTile   // get the target tile from state
+                let updatedTiles = [...this.state.tiles]     // copy the state of tiles
+                updatedTiles[targetTile] = {                 // change the value of the target tile
                     value: parseInt(event.key),
                 }
                 this.setState({
                     ...this.state,
-                    tiles: updatedTiles
+                    tiles: updatedTiles,
+                    step: this.state.step + 1,
+                    history: this.state.history.concat([updatedTiles])
                 })
             }      
         }
     }
+
     getValues(idArray) {
         /* Takes in an array of the id's to check,
             returns an array of values from said ids */
@@ -63,12 +68,12 @@ class Board extends React.Component {
             let checkNumbers = [1,2,3,4,5,6,7,8,9]
 
             for (let i=0; i< checkNumbers.length; i++) {
-                var num = checkNumbers.pop()
-                if (!valuesArray.includes(num)) {
+                var num = checkNumbers.pop()         // get a number from the list -
+                if (!valuesArray.includes(num)) {    // if its not in the set of values, return false
                     return false
                 }
             }
-            return true
+            return true                            // return true if you never had to return false
     }
 
     handleSolve() {
@@ -77,15 +82,27 @@ class Board extends React.Component {
             let set = this.getValues(checkIDs[i])   // each of the checks [true,true,false,true... ] etc.
             checks.push(this.checkValidity(set))
         }
-        
+
         if (!checks.includes(false)) {               // If none of them failed, set the state to solved
             const tempState = this.state
-            tempState.isInitial = true
+            tempState.isSolved = true
             this.setState(tempState)
         }
     }
+
+    handleBack() {
+        const currentStep = this.state.step                           // get current step
+        const newTiles = this.state.history[currentStep-1]            // get the tiles for the previous step in history
+        const newHistory = this.state.history.slice(0, currentStep)   // make the history forget that last step
+        console.log(newHistory)
+        this.setState({
+            ...this.state,
+            tiles: newTiles,
+            history: newHistory,
+            step: currentStep - 1
+        })
+    }
         
-    
     render() {
         const board = this.state.tiles.map((tile, i) => 
             <Tile 
@@ -103,6 +120,15 @@ class Board extends React.Component {
                 {board}
                 <CheckSolutionButton
                     onClick={() => this.handleSolve()} />
+
+                <span id="solvedSpan">
+                    {this.state.isSolved ? "You Got it!":""}
+                </span>
+                <button 
+                className="toggleHistoryButton"
+                onClick={() => this.handleBack()}>
+                    Back
+                    </button>
             </div>
         )
     }
