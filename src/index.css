@@ -1,4 +1,6 @@
-
+body{
+  background-color: black;
+}
 .board {
   display: flex;
   flex-wrap: wrap;
@@ -10,17 +12,21 @@
   flex: 0 0 11.111111%;
   height: 50px;
 
-  background-color: white;
+  background-color: black;
+  color: white;
   font-size: 32px;
+
+  border-width: 1px;
+  border-style: solid;
+  border-color: white;
 }
 
 .initialTile {
-  background-color: blanchedalmond;
+  background-color: darkgray;
 }
 
 #checkSolutionButton {
-  margin-top: 35px;
-  width: 225px;
+  flex: 0 0 50%;
   font-size: 32px;
   color: blanchedalmond;
   background-color: darkgoldenrod;
@@ -28,12 +34,18 @@
 
 #solvedSpan {
   color: green;
-  margin-top: 55px;
+  flex: 0 0 100%;
+  margin: auto;
+  font-weight: bolder;
   font-size: 35px;
-  margin-left: 35px;
 }
 
 .toggleHistoryButton {
-  margin-top:35px;
-  width: 75px;
+  flex: 0 0 50%;
+  font-size: 36px;
+}
+
+#solveButton {
+  font-size:36px;
+  flex: 0 0 100%;
 }
